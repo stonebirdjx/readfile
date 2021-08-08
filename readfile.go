@@ -1,15 +1,12 @@
+// Author stone-bird created on 2021/8/8 10:04.
+// Email 1245863260@qq.com or g1245863260@gmail.com.
+// Use of more goroutine deal the file line content
 package readfile
 
 import (
 	"bufio"
 	"os"
 )
-
-/*
-* @Auther:create by hjx
-* @Email :1245863260@qq.com g1245863260@gmail.com
-* @Date  :2021/8/8 10:15
- */
 
 // file reader struct
 type FileReader struct {
@@ -19,24 +16,24 @@ type FileReader struct {
 }
 
 // make a new file reader
-func NewFileReader(fileName string) (*FileReader, error) {
-	var fileReader FileReader
-	fileReader.FileName = fileName
-	fileReader.ContentChan = make(chan string)
+func NewReader(fileName string) (*FileReader, error) {
+	var fr FileReader
+	fr.FileName = fileName
+	fr.ContentChan = make(chan string)
 	file, err := os.Open(fileName)
 	if err != nil {
 		return nil, err
 	}
-	fileReader.File = file
-	return &fileReader, nil
+	fr.File = file
+	return &fr, nil
 }
 
-// read line recommend scanner
-func (fileReader *FileReader) BufioScanner() {
-	bs := bufio.NewScanner(fileReader.File)
-	for bs.Scan(){
+//read line recommend scanner
+func (fr *FileReader) Scanner() {
+	bs := bufio.NewScanner(fr.File)
+	for bs.Scan() {
 		lineString := bs.Text()
-		fileReader.ContentChan <- lineString
+		fr.ContentChan <- lineString
 	}
-	close(fileReader.ContentChan)
+	close(fr.ContentChan)
 }
